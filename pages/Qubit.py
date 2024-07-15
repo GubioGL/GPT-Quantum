@@ -6,15 +6,16 @@ from util.function import Qubit
 from util.function import expected
 
 def onequbit():
-    st.sidebar.markdown("<h1 style='text-align: center; font-size: 2.5em;'>Hamiltoniana de um qubit</h1>", unsafe_allow_html=True)
-    #MARKDOWN()
+    st.sidebar.markdown("""
+    <div font-size: 1.2em;'>
+        <p>We will start with a basic Hamiltonian for the qubit, which flips the state of the qubit.</p>
+    </div> """, unsafe_allow_html=True)
     st.sidebar.markdown("""
     <div font-size: 1.2em;'>
         <p>System setup: </p>
-        <p>We will start with a basic Hamiltonian for the qubit, which flips the state of the qubit.</p>
     </div> """, unsafe_allow_html=True)
 
-    st.sidebar.latex(r"H = \frac{\omega}{2} \sigma_z")
+    st.sidebar.latex(r"H = \omega \sigma_z")
 
     st.sidebar.markdown("""
     <div font-size: 1.2em;'>
@@ -60,40 +61,39 @@ def onequbit():
     model.plot_evaluate(condiction_=operador,delta=tc.tensor([freq]),N_=50,time0=time[0],time1=time[1])
 
     st.markdown("## Resultados")
-    plt.figure(figsize=(8, 5))
     v_esperados = expected(model.rho, model.Observavel).sum(dim=-1).real
-
-    plt.scatter(model.time.detach().numpy(), v_esperados.detach().numpy(), c="r", marker=".", label="Neural Network")
-    plt.scatter(model.time.detach().numpy(), model.expect.detach().numpy(), c="g", marker=".", label="qutip")
+    plt.figure(figsize=(8, 5))
+    plt.plot(model.time.detach().numpy(), v_esperados.detach().numpy(), "r.",label="Neural Network")
+    plt.plot(model.time.detach().numpy(), model.expect.detach().numpy(),"g-",label="qutip")
     plt.xlabel("Time")
     plt.ylabel("<sigma_z>")
     plt.legend()
+    plt.ylim([-1.1,1.1])
     st.pyplot(plt)
 
 def onequbit_open():
-    st.sidebar.markdown("<h1 style='text-align: center; font-size: 2.5em;'>Hamiltoniana de um qubit</h1>", unsafe_allow_html=True)
     #MARKDOWN()
-    st.sidebar.markdown("""
-    <div font-size: 1.2em;'>
+    st.sidebar.markdown(
+        """
+        <div font-size: 1.2em;'>
         <p>System setup: </p>
-        <p>We will start with a basic Hamiltonian for the qubit.</p>
-        <p>Additionally, we add a collapse operator that describes the dissipation of energy from the qubit to an external environment .</p>
-    </div> """, unsafe_allow_html=True)
+        </div> 
+        """, unsafe_allow_html=True)
 
-    st.sidebar.latex(r"H = \frac{\omega}{2} \sigma_z")
+    st.sidebar.latex(r"H = \omega \sigma_z")
 
     st.sidebar.markdown("""
     <div font-size: 1.2em;'>
-        <p>onde</p>
+        <p>The collapse operator that describes the dissipation of energy from the qubit to an external environment</p>
     </div>
     """, unsafe_allow_html=True)
     st.sidebar.latex(r"""
-    C = \sqrt(g)\sigma_{z}
+    C = \sqrt{g}\sigma_{x}
     """)
 
     st.sidebar.markdown("""
     <div  font-size: 1.2em;'>
-        <p>Master equation</p>
+        <p>The Lindblad Master equation</p>
     </div>""", unsafe_allow_html=True)
 
 
@@ -128,39 +128,40 @@ def onequbit_open():
     v_esperados = expected(model.rho, model.Observavel).sum(dim=-1).real
 
     plt.scatter(model.time.detach().numpy(), v_esperados.detach().numpy(), c="r", marker=".", label="Neural Network")
-    plt.scatter(model.time.detach().numpy(), model.expect.detach().numpy(), c="g", marker=".", label="qutip")
+    plt.scatter(model.time.detach().numpy(), model.expect.detach().numpy(), c="g", marker="-", label="qutip")
     plt.xlabel("Time")
     plt.ylabel("<sigma_z>")
     plt.legend()
+    plt.ylim([-1.1,1.1])
     st.pyplot(plt)
 
 def  twoqubit_open():
-    st.sidebar.markdown("<h1 style='text-align: center; font-size: 2.5em;'>Hamiltoniana de dois qubit</h1>", unsafe_allow_html=True)
     #MARKDOWN()
     st.sidebar.markdown("""
-    <div font-size: 1.2em;'>
-        <p>System setup: </p>
-    </div> """, unsafe_allow_html=True)
-    st.sidebar.latex(r"H = J_{1,1} \sigma_z + J_{2,2}\sigma_z + J_{1,2}")
+        <div font-size: 1.2em;'>
+            <p>System setup: </p>
+        </div> """, unsafe_allow_html=True)
+    st.sidebar.latex(r"H = J_{1,1} \sigma_z + J_{2,2}\sigma_z + J_{1,2}\sigma_x ")
 
     st.sidebar.markdown("""
-    <div font-size: 1.2em;'>
-        <p>onde</p>
-    </div>
-    """, unsafe_allow_html=True)
+        <div font-size: 1.2em;'>
+            <p>onde</p>
+        </div>
+        """, unsafe_allow_html=True)
     st.sidebar.latex(r"""
-    C = \sqrt(g)\sigma_{z}
-    """)
+        C = \sqrt(g)\sigma_{z}
+        """)
 
     st.sidebar.markdown("""
-    <div  font-size: 1.2em;'>
-        <p>Master equation</p>
-    </div>""", unsafe_allow_html=True)
+        <div  font-size: 1.2em;'>
+            <p>Master equation</p>
+        </div>""", unsafe_allow_html=True)
 
 
     st.sidebar.latex(r"\frac{d\rho}{dt} = -\frac{i}{\hbar} [H, \rho] + \sum_k \left( L_k \rho L_k^\dagger - \frac{1}{2} \left\{ L_k^\dagger L_k, \rho \right\} \right)")
-    st.sidebar.markdown("""  <div  font-size: 1.2em;'> where  rho is the output of Neural Network.  </div>""", unsafe_allow_html=True)
-
+    st.sidebar.markdown("""  
+        <div  font-size: 1.2em;'> where  rho is the output of Neural Network.  </div>""", unsafe_allow_html=True)
+    plt.ylim([-1.1,1.1])
     st.pyplot(plt)
     
 page_names_to_funcs = {
